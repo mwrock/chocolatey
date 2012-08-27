@@ -2,15 +2,19 @@ function Get-ChocolateyBins {
 param(
   [string] $packageFolder
 )
+  Write-Debug "Running 'Get-ChocolateyBins' for $packageFolder";
+
   if ($packageFolder -notlike '') { 
 @"
-$h2
-Executable Batch Links
-$h2
+  $h2
+   Executable Links (*.exe)
+  $h2
+"@ | Write-Host
+@"
 Looking for executables in folder: $packageFolder
 Adding batch files for any executables found to a location on PATH. In other words the executable will be available from ANY command line/powershell prompt.
 $h2
-"@ | Write-Host
+"@ | Write-Debug
     $batchCreated = $false
     try {
       $files = get-childitem $packageFolder -include *.exe -recurse

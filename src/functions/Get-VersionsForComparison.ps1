@@ -1,12 +1,16 @@
-Function Get-VersionsForComparison {
+function Get-VersionsForComparison {
 param (
- $packageVersions = @()
+  $packageVersions = @()
 )
 
   $versionsForComparison = @{}
   foreach ($packageVersion in $packageVersions) {
     $longVersion = Get-LongPackageVersion $packageVersion
-    $versionsForComparison.Add($longVersion,$packageVersion)
+    if ($versionsForComparison.ContainsKey($longVersion) -ne $true) {
+      $versionsForComparison.Add($longVersion,$packageVersion)
+    }
+    
   } 
+  
   return $versionsForComparison
 }

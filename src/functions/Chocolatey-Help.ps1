@@ -12,29 +12,13 @@ Chocolatey allows you to install application nuggets and run executables from an
 $h2
 Known Issues
 $h2
- * There is no automated uninstallation.
+ * The automated uninstall is limited. You have to run it against each version and it only removes the package if there is not a chocolateyUninstall.ps1 included.
  * See https://github.com/chocolatey/chocolatey/issues
 $h2
 Release Notes
 $h2
 NOTE: Abbreviated, please see the wiki (https://github.com/chocolatey/chocolatey/wiki/ReleaseNotes) for the full set of notes.
 v0.9.8
- * .12
-  - Fixed an issue with write-host and write-error overrides
-  - Fixed an issue with getting the full path to powershell
-  - Reduced window pop ups
- * .13
-  - New Command! WebPI - chocolatey webpi (cwebpi) will install items from Web PI. Alternatively, you can specify -source webpi
-  - New Command! Gem - chocolatey gem (cgem) will install Ruby Gems. Alternatively, you can specify -source ruby
-  - New Command! Pack - chocolatey pack (cpack) will package your chocolatey package
-  - New Command! Push - chocolatey push (cpush) will push your chocolatey package to http://chocolatey.org/
-  - You can call install with a packages.config file that contains id, version, and source!
- * .14
-  - Enhancement - 64 bit url added to Install-ChocolateyZipPackage
-  - Enhancement - main helpers work with files not coming from HTTP
-  - Enhancement - Pass -ValidExitCodes to both install helpers
-  - Fix - CList now only includes recent versions without -all switch
-  - Fix - packages with .config in the name now work again
  * .15
   - Enhancement - Chocolatey's default folder is now C:\Chocolatey (breaking change)
   - Enhancement - Use -force to reinstall existing packages (breaking change)
@@ -43,6 +27,13 @@ v0.9.8
   - Fix - Now parses the correct version of a package you have installed
  * .16
   - Install upgrade fix
+ * .17
+  - New Command! Uninstall - chocolatey uninstall (cuninst) will uninstall packages. Expect support for this to get smoother over the next few versions.
+  - New Command! Cygwin - chocolatey cygwin (ccygwin) will install Cygwin packages. Alternatively, you can specify cinst -source cygwin
+  - New Command! Python - chocolatey python (cpython) will install Python packages. Alternatively, you can specify cinst -source python
+  - Enhancement/Fix - Prerelease packages are better  supported
+  - Enhancement - added -debug switch
+  - Fix - Packages.config works without sources specified now
 $h2
 $h2
 using (var legalese = new LawyerText()) {
@@ -64,7 +55,7 @@ $h2
 $h2
 Usage
 $h2
-chocolatey [install [packageName [-source source] [-version version] | pathToPackagesConfig]  | installmissing packageName [-source source] | update packageName [-source source] [-version version] | list [packageName] [-source source] | help | version [packageName] | webpi packageName | gem packageName [-version version]]
+chocolatey [install [packageName [-source source] [-version version] | pathToPackagesConfig]  | installmissing packageName [-source source] | update packageName [-source source] [-version version] | list [packageName] [-source source] | help | version [packageName] | webpi packageName | gem packageName [-version version] |uninstall packageName]
 
 example: chocolatey install nunit
 example: chocolatey install nunit -version 2.5.7.10213
@@ -76,6 +67,7 @@ example: chocolatey list (might take awhile)
 example: chocolatey list nunit
 example: chocolatey version
 example: chocolatey version nunit
+example: chocolatey uninstall
 
 A shortcut to 'chocolatey install' is 'cinst'
 cinst [packageName  [-source source] [-version version] | pathToPackagesConfig]

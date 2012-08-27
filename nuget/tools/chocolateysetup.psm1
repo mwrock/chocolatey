@@ -5,13 +5,13 @@ $sysDrive = $env:SystemDrive
 $defaultChocolateyPathOld = "$sysDrive\NuGet"
 
 function Set-ChocolateyInstallFolder($folder){
-  if(test-path $folder){
+  #if(test-path $folder){
     write-host "Creating $chocInstallVariableName as a User Environment variable and setting it to `'$folder`'"
     [Environment]::SetEnvironmentVariable($chocInstallVariableName, $folder, [System.EnvironmentVariableTarget]::User)
-  }
-  else{
-    throw "Cannot set the chocolatey install folder. Folder not found [$folder]"
-  }
+  #}
+  #else{
+  #  throw "Cannot set the chocolatey install folder. Folder not found [$folder]"
+  #}
 }
 
 function Get-ChocolateyInstallFolder(){
@@ -35,47 +35,75 @@ $nugetChocolateyUpdateAlias = Join-Path $chocolateyExePath 'cup.bat'
 $nugetChocolateyListAlias = Join-Path $chocolateyExePath 'clist.bat'
 $nugetChocolateyVersionAlias = Join-Path $chocolateyExePath 'cver.bat'
 $nugetChocolateyWebPiAlias = Join-Path $chocolateyExePath 'cwebpi.bat'
+$nugetChocolateyCygwinAlias = Join-Path $chocolateyExePath 'ccygwin.bat'
+$nugetChocolateyPythonAlias = Join-Path $chocolateyExePath 'cpython.bat'
 $nugetChocolateyGemAlias = Join-Path $chocolateyExePath 'cgem.bat'
 $nugetChocolateyPackAlias = Join-Path $chocolateyExePath 'cpack.bat'
 $nugetChocolateyPushAlias = Join-Path $chocolateyExePath 'cpush.bat'
+$nugetChocolateyUninstallAlias = Join-Path $chocolateyExePath 'cuninst.bat'
+
 
 Write-Host "Creating `'$nugetChocolateyBinFile`' so you can call 'chocolatey' from anywhere."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" %*" | Out-File $nugetChocolateyBinFile -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyInstallAlias`' so you can call 'chocolatey install' from a shortcut of 'cinst'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" install %*" | Out-File $nugetChocolateyInstallAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyInstallIfMissingAlias`' so you can call 'chocolatey installmissing' from a shortcut of 'cinstm'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" installmissing %*" | Out-File $nugetChocolateyInstallIfMissingAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyUpdateAlias`' so you can call 'chocolatey update' from a shortcut of 'cup'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" update %*" | Out-File $nugetChocolateyUpdateAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyListAlias`' so you can call 'chocolatey list' from a shortcut of 'clist'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" list %*" | Out-File $nugetChocolateyListAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyVersionAlias`' so you can call 'chocolatey version' from a shortcut of 'cver'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" version %*" | Out-File $nugetChocolateyVersionAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyWebPiAlias`' so you can call 'chocolatey webpi' from a shortcut of 'cwebpi'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" webpi %*" | Out-File $nugetChocolateyWebPiAlias -encoding ASCII
+
+Write-Host "Creating `'$nugetChocolateyCygwinAlias`' so you can call 'chocolatey cygwin' from a shortcut of 'ccygwin'."
+"@echo off
+SET DIR=%~dp0%
+""$nugetChocolateyPath\chocolatey.cmd"" cygwin %*" | Out-File $nugetChocolateyCygwinAlias -encoding ASCII
+
+Write-Host "Creating `'$nugetChocolateyPythonAlias`' so you can call 'chocolatey python' from a shortcut of 'cpython'."
+"@echo off
+SET DIR=%~dp0%
+""$nugetChocolateyPath\chocolatey.cmd"" python %*" | Out-File $nugetChocolateyPythonAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyGemAlias`' so you can call 'chocolatey gem' from a shortcut of 'cgem'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" gem %*" | Out-File $nugetChocolateyGemAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyPackAlias`' so you can call 'chocolatey pack' from a shortcut of 'cpack'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" pack %*" | Out-File $nugetChocolateyPackAlias -encoding ASCII
+
 Write-Host "Creating `'$nugetChocolateyPushAlias`' so you can call 'chocolatey push' from a shortcut of 'cpush'."
+"@echo off
+SET DIR=%~dp0%
+""$nugetChocolateyPath\chocolatey.cmd"" uninstall %*" | Out-File $nugetChocolateyUninstallAlias -encoding ASCII
+
+Write-Host "Creating `'$nugetChocolateyUninstallAlias`' so you can call 'chocolatey uninstall' from a shortcut of 'cuninst'."
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" push %*" | Out-File $nugetChocolateyPushAlias -encoding ASCII
@@ -106,10 +134,6 @@ param(
   [Parameter(Mandatory=$false)][string]$chocolateyPath = "$sysDrive\Chocolatey"
 )
 
-  if(!(test-path $chocolateyPath)){
-    mkdir $chocolateyPath | out-null
-  }
-  
   #if we have an already environment variable path, use it.
   $alreadyInitializedNugetPath = Get-ChocolateyInstallFolder
   if($alreadyInitializedNugetPath -and $alreadyInitializedNugetPath -ne $chocolateyPath -and $alreadyInitializedNugetPath -ne $defaultChocolateyPathOld){
@@ -117,6 +141,10 @@ param(
   }
   else {
     Set-ChocolateyInstallFolder $chocolateyPath
+  }
+
+  if(!(test-path $chocolateyPath)){
+    mkdir $chocolateyPath | out-null
   }
 
   #set up variables to add
@@ -146,7 +174,7 @@ Creating Chocolatey NuGet folders if they do not already exist.
   Install-ChocolateyFiles $chocolateyPath
   
   $chocolateyExePathVariable = $chocolateyExePath.ToLower().Replace($chocolateyPath.ToLower(), "%DIR%..\").Replace("\\","\")
-  Create-ChocolateyBinFiles $nugetChocolateyPath.ToLower().Replace($chocolateyPath.ToLower(), "%$($chocInstallVariableName)%\").Replace("\\","\") $chocolateyExePath
+  Create-ChocolateyBinFiles $nugetChocolateyPath.ToLower().Replace($chocolateyPath.ToLower(), "%DIR%..\").Replace("\\","\") $chocolateyExePath
   Initialize-ChocolateyPath $chocolateyExePath $chocolateyExePathVariable
   Process-ChocolateyBinFiles $chocolateyExePath $chocolateyExePathVariable
   
@@ -202,6 +230,12 @@ param(
   
   $chocInstallFolder = Join-Path $thisScriptFolder "chocolateyInstall"
   Write-Host "Copying the contents of `'$chocInstallFolder`' to `'$chocolateyPath`'."
+  if(test-path "$chocolateyPath\chocolateyInstall\functions") {
+    Remove-Item "$chocolateyPath\chocolateyInstall\functions" -recurse -force 
+  }
+  if(test-path "$chocolateyPath\chocolateyInstall\helpers") {
+    Remove-Item "$chocolateyPath\chocolateyInstall\helpers" -recurse -force 
+  }
   Copy-Item $chocInstallFolder $chocolateyPath -recurse -force
 }
 
