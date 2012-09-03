@@ -13,5 +13,5 @@ param(
   $script:command = $command
   $script:type = $type
 
-  if ($script:exec_install_chocolateydesktoplink_actual) { Install-ChocolateyExplorerMenuItem-Actual @PSBoundParameters}
+  if ($script:exec_install_ChocolateyExplorerMenuItem_actual) { Install-ChocolateyExplorerMenuItem-Actual @PSBoundParameters}
 }
