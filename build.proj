@@ -18,7 +18,7 @@
   </Target>
   
   <Target Name="Setup">
-    <Exec Command="cmd /c $(baseDir)setup.cmd" />
+    <Exec Command="cmd /c $(baseDir)test.cmd" />
   </Target>
 
   <Target Name="PrepareNuGetFiles">
