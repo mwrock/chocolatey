@@ -5,11 +5,7 @@ param(
   [string] $version = ''
 )
   Write-Debug "Running 'Run-NuGet' for $packageName with source: `'$source`', version:`'$version`'";
-@"
-$h2
-NuGet
-$h2
-"@ | Write-Debug
+  Write-Debug "___ NuGet ____"
 
   	$srcArgs = Get-SourceArguments $source
 
@@ -24,13 +20,27 @@ $h2
   $logFile = Join-Path $nugetChocolateyPath 'install.log'
   $errorLogFile = Join-Path $nugetChocolateyPath 'error.log'
   Write-Debug "Calling NuGet.exe $packageArgs"
-  Start-Process $nugetExe -ArgumentList $packageArgs -NoNewWindow -Wait -RedirectStandardOutput $logFile -RedirectStandardError $errorLogFile
 
-  $nugetOutput = Get-Content $logFile -Encoding Ascii
+  $process = New-Object system.Diagnostics.Process
+  $process.StartInfo = new-object System.Diagnostics.ProcessStartInfo($nugetExe, $packageArgs)
+  $process.StartInfo.RedirectStandardOutput = $true
+  $process.StartInfo.RedirectStandardError = $true
+  $process.StartInfo.UseShellExecute = $false
+
+  $process.Start() | Out-Null
+  $process.WaitForExit()
+
+  $nugetOutput = $process.StandardOutput.ReadToEnd()
+  $errors = $process.StandardError.ReadToEnd()
+
+
+  $nugetOutput | Out-File $logFile
+  $errors | Out-File $errorLogFile
+
   foreach ($line in $nugetOutput) {
     if ($line -ne $null) {Write-Debug $line;}
   }
-  $errors = Get-Content $errorLogFile
+
   if ($errors -ne '') {
     Write-Host $errors -BackgroundColor Red -ForegroundColor White
     #Throw $errors

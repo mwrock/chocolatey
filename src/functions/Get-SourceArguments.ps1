@@ -11,9 +11,9 @@ param(
 		$useNugetConfig = Get-ConfigValue 'useNuGetForSources'
 		
 		if ($useNugetConfig -eq 'false') {
-			$sources = Get-ConfigValue 'sources'
+			$sources = Get-Sources
 	
-			$sources.source | foreach {
+			$sources | foreach {
 				$srcUri = $_.value
 				$srcArgs = $srcArgs + "-Source `"$srcUri`" "
 			}

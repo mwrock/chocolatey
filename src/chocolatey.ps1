@@ -10,12 +10,14 @@
   [switch] $force = $false,
   [alias("pre")][switch] $prerelease = $false,
   [alias("lo")][switch] $localonly = $false,
-  [switch] $debug
-  ) 
+  [switch] $debug,
+  [string] $name
+)
 
 # chocolatey
 # Copyright (c) 2011-Present Rob Reynolds
-# Crediting contributions by Chris Ortman, Nekresh, Staxmanade, Chrissie1, AnthonyMastrean, Rich Siegel, and other contributors from the community.
+# Committers: Rob Reynolds, Rich Siegel, Matt Wrock
+# Crediting contributions by Chris Ortman, Nekresh, Staxmanade, Chrissie1, AnthonyMastrean, Rich Siegel, Matt Wrock and other contributors from the community.
 # Big thanks to Keith Dahlby for all the powershell help! 
 # Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,7 +28,7 @@ $currentThread.CurrentCulture = $culture;
 $currentThread.CurrentUICulture = $culture;
 
 #Let's get Chocolatey!
-$chocVer = '0.9.8.19'
+$chocVer = '0.9.8.20-alpha1'
 $nugetChocolateyPath = (Split-Path -parent $MyInvocation.MyCommand.Definition)
 $nugetPath = (Split-Path -Parent $nugetChocolateyPath)
 $nugetExePath = Join-Path $nuGetPath 'bin'
@@ -39,6 +41,10 @@ $h2 = '-------------------------'
 $globalConfig = ''
 $userConfig = ''
 $env:ChocolateyEnvironmentDebug = 'false'
+$RunNote = "DarkCyan"
+$Warning = "Magenta"
+$Error = "Red"
+$Note = "Green"
 
 
 $DebugPreference = "SilentlyContinue"
@@ -82,5 +88,6 @@ switch -wildcard ($command)
   "pack" { Chocolatey-Pack $packageName; }
   "push" { Chocolatey-Push $packageName $source; }
   "help" { Chocolatey-Help; }
+  "sources" { Chocolatey-Sources $packageName $name $source; }
   default { Write-Host 'Please run chocolatey /? or chocolatey help'; }
 }
