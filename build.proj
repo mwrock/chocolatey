@@ -14,11 +14,11 @@
   <Target Name="Go" DependsOnTargets="$(GoDependsOn)" />
   
   <Target Name="Tests">
-    <Exec Command="cmd /c pester"/>
+    <Exec Command="cmd /c $(baseDir)test.cmd" />
   </Target>
   
   <Target Name="Setup">
-    <Exec Command="cmd /c $(baseDir)test.cmd" />
+    <Exec Command="cmd /c $(baseDir)setup.cmd" />
   </Target>
 
   <Target Name="PrepareNuGetFiles">
@@ -38,14 +38,14 @@
       />
   </Target>
   
-  <Target Name="Package">
+  <Target Name="Package" DependsOnTargets="PrepareNuGetFiles">
   <ItemGroup>
       <NuspecFiles Include="$(BuildPath)**\*nuspec" />
       <FilesToDelete Exclude="$(BuildPath)\**\*.nupkg" Include="$(BuildPath)\**\*" />
       <DirectoriesToDelete Include="$(BuildPath)\nuget" />
     </ItemGroup>
     <Exec Command="nuget pack &quot;%(NuspecFiles.FullPath)&quot; -NoPackageAnalysis" WorkingDirectory="$(BuildPath)" />
-          
+    <!--<Exec Command="FOR /F &quot;delims=|&quot; %%I IN ('DIR %systemdrive%\chocolatey\lib\nuget.commandline.* /B /O:D') DO %systemdrive%\chocolatey\lib\%%I\tools\nuget pack &quot;%(NuspecFiles.FullPath)&quot; -NoPackageAnalysis" WorkingDirectory="$(BuildPath)" />-->
     <Delete Files="@(FilesToDelete)" />
     <RemoveDir Directories="@(DirectoriesToDelete)" />
   </Target>
